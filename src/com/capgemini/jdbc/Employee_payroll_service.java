@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.*;
 import com.capgemini.jdbc.EmployeePayrollException.Exception;
 
 public class Employee_payroll_service {
@@ -11,8 +12,9 @@ public class Employee_payroll_service {
 		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
 	}
 
-	public List<Employee_payroll_Data> employeePayrollList;
+	private List<Employee_payroll_Data> employeePayrollList;
 	private Employee_payroll_DBService employeePayrollDBService;
+	private Map<String, Double> employeePayrollMap;
 
 	public Employee_payroll_service() {
 		employeePayrollDBService = Employee_payroll_DBService.getInstance();
@@ -21,6 +23,11 @@ public class Employee_payroll_service {
 	public Employee_payroll_service(List<Employee_payroll_Data> employeePayrollList) {
 		this();
 		this.employeePayrollList = employeePayrollList;
+	}
+
+	public Employee_payroll_service(Map<String, Double> employeePayrollMap) {
+		this();
+		this.employeePayrollMap = employeePayrollMap;
 	}
 
 	public static void main(String[] args) {
@@ -95,4 +102,33 @@ public class Employee_payroll_service {
 		return employeePayrollDataList.get(0).equals(getEmployee_payroll_Data(name));
 	}
 
+	public Map<String, Double> readPayrollDataForAvgSalary(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.get_AverageSalary_ByGender();
+		return employeePayrollMap;
+	}
+
+	public Map<String, Double> readPayrollDataForSumSalary(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.get_SumOfSalary_ByGender();
+		return employeePayrollMap;
+	}
+
+	public Map<String, Double> readPayrollDataForMaxSalary(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.get_Max_Salary_ByGender();
+		return employeePayrollMap;
+	}
+
+	public Map<String, Double> readPayrollDataForMinSalary(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.get_Min_Salary_ByGender();
+		return employeePayrollMap;
+	}
+
+	public Map<String, Double> readPayrollDataFor_CountOfEmployee_ByGender(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.get_CountOfEmployee_ByGender();
+		return employeePayrollMap;
+	}
 }
