@@ -36,15 +36,15 @@ public class Employee_payroll_DBService {
 		return employeePayrollList;
 	}
 
-	public int updateEmployeeData(String name, double salary) {
-		return this.updateDataUsingStatement(name, salary);
+	public int updateEmployeeData(String name, Double salary) {
+		return this.updateEmployeeDataUsingPreparedStatement(name, salary);
 	}
 
-	private int updateDataUsingStatement(String name, double salary) {
-		String sql = String.format("UPDATE employee_payroll SET salary = %.2f where name = '%s';", salary, name);
+	private int updateEmployeeDataUsingPreparedStatement(String name, Double salary) {
+		String sql = String.format("update employee_payroll set salary = %.2f where name='%s';", salary, name);
 		try (Connection connection = this.getConnection();) {
-			Statement statement = connection.createStatement();
-			return statement.executeUpdate(sql);
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			return prepareStatement.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

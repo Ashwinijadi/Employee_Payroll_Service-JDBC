@@ -67,7 +67,7 @@ public class Employee_payroll_service {
 			return null;
 	}
 
-	public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException, NullPointerException {
+	public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
 		int result = employeePayrollDBService.updateEmployeeData(name, salary);
 		if (result == 0)
 			throw new EmployeePayrollException(Exception.DATA_NULL, "No data update is failed");
