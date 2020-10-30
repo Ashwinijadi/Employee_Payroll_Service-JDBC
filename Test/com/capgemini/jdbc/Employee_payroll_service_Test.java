@@ -36,7 +36,7 @@ class Employee_payroll_service_Test {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
 				.readEmployeepayrollData(IOService.DB_IO);
-		employeePayrollService.updateEmployeeSalary("Terisa", 250000.0);
+		employeePayrollService.updateEmployeeSalary("Terisa", 350000.0);
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
 		Assert.assertFalse(result);
 		System.out.println(employeePayrollData);
