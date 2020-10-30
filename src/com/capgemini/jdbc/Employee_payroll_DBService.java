@@ -1,6 +1,7 @@
 package com.capgemini.jdbc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -85,6 +86,25 @@ public class Employee_payroll_DBService {
 				LocalDate startDate = resultSet.getDate("start").toLocalDate();
 				employeePayrollList.add(new Employee_payroll_Data(id, name, salary, startDate));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
+	}
+
+	public List<Employee_payroll_Data> getEmployeeForDateRange(LocalDate startDate, LocalDate endDate) {
+		String sql = String.format("SELECT * FROM employee_payroll2 WHERE START BETWEEN '%s' AND '%s';",
+				Date.valueOf(startDate), Date.valueOf(endDate));
+		return this.getEmployeePayrollDataUsingDB(sql);
+	}
+
+	private List<Employee_payroll_Data> getEmployeePayrollDataUsingDB(String sql) {
+		ResultSet resultSet;
+		List<Employee_payroll_Data> employeePayrollList = null;
+		try (Connection connection = this.getConnection();) {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			resultSet = prepareStatement.executeQuery(sql);
+			employeePayrollList = this.getEmployeePayrollData(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

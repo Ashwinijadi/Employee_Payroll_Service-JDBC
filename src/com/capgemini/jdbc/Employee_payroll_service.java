@@ -1,9 +1,9 @@
 package com.capgemini.jdbc;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import com.capgemini.jdbc.EmployeePayrollException.Exception;
 
 public class Employee_payroll_service {
@@ -46,6 +46,13 @@ public class Employee_payroll_service {
 			System.out.println("Employee Payroll Data to Console\n" + employeePayrollList);
 		else if (ioService.equals(IOService.FILE_IO))
 			new Employee_payroll_FileIOService().writeData(employeePayrollList);
+	}
+
+	public List<Employee_payroll_Data> readPayrollDataForRange(IOService ioService, LocalDate startDate,
+			LocalDate endDate) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollList = employeePayrollDBService.readData();
+		return employeePayrollList;
 	}
 
 	public void printData(IOService ioService) {

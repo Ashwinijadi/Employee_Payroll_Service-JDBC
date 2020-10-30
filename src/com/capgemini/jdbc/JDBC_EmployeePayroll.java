@@ -13,8 +13,8 @@ public class JDBC_EmployeePayroll {
 		}
 		listDrivers();
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service?useSSL=false", "root",
-					"Jashwini@2298");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service?useSSL=false",
+					"root", "Jashwini@2298");
 			System.out.println("Connection Done..!!!" + con);
 		} catch (Exception e) {
 			e.printStackTrace();

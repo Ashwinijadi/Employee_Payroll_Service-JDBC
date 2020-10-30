@@ -21,7 +21,8 @@ public class Employee_payroll_Data {
 
 	@Override
 	public String toString() {
-		return "id =" + id + ",name =" + name + ",salary =" + salary;
+		return "Employee_payroll_Data [id=" + id + ", name=" + name + ", salary=" + salary + ", startDate=" + startDate
+				+ "]";
 	}
 
 	@Override
