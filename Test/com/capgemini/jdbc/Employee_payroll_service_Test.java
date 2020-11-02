@@ -49,16 +49,14 @@ class Employee_payroll_service_Test {
 	public void givenEmployeePayrollData_ShouldMatch_MaxSalary_GroupByGender() {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		Map<String, Double> MaxSalaryByGender = employeePayrollService.readPayrollDataForMaxSalary(IOService.DB_IO);
-		Assert.assertTrue(
-				MaxSalaryByGender.get("M").equals(5000000.0) && MaxSalaryByGender.get("F").equals(350000.0));
+		Assert.assertTrue(MaxSalaryByGender.get("M").equals(5000000.0) && MaxSalaryByGender.get("F").equals(350000.0));
 	}
 
 	@Test
 	public void givenEmployeePayrollData_ShouldMatch_MinSalary_GroupByGender() {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		Map<String, Double> MinSalaryByGender = employeePayrollService.readPayrollDataForMinSalary(IOService.DB_IO);
-		Assert.assertTrue(
-				MinSalaryByGender.get("M").equals(100000.0) && MinSalaryByGender.get("F").equals(350000.0));
+		Assert.assertTrue(MinSalaryByGender.get("M").equals(100000.0) && MinSalaryByGender.get("F").equals(350000.0));
 	}
 
 	@Test
@@ -66,7 +64,29 @@ class Employee_payroll_service_Test {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		Map<String, Double> employeeCountByGender = employeePayrollService
 				.readPayrollDataFor_CountOfEmployee_ByGender(IOService.DB_IO);
-		Assert.assertTrue(
-				employeeCountByGender.get("M").equals(3.0) && employeeCountByGender.get("F").equals(1.0));
+		Assert.assertTrue(employeeCountByGender.get("M").equals(3.0) && employeeCountByGender.get("F").equals(1.0));
+	}
+
+	@Test
+	public void givenNewSalaryForEmployeeWhenupdatedShouldSyncWith_DB() throws EmployeePayrollException {
+		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
+		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
+				.readEmployeepayrollData(IOService.DB_IO);
+		employeePayrollService.updateEmployeeSalary("Terisa", 350000.0);
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
+		Assert.assertTrue(result);
+		System.out.println(employeePayrollData);
+	}
+
+	@Test
+	public void givenNewEmployee_WhenAddedShouldSyncWithDB() throws EmployeePayrollException {
+		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
+		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
+				.readEmployeepayrollData(IOService.DB_IO);
+		employeePayrollService.addEmployeeToPayRoll("Ashwini",100000.00, LocalDate.now(),"F");
+		System.out.println(employeePayrollData);
+		Boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Ashwini");
+		Assert.assertTrue(result);
+		System.out.println(employeePayrollData);
 	}
 }
