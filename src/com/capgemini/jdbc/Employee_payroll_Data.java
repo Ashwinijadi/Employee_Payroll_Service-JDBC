@@ -8,6 +8,34 @@ public class Employee_payroll_Data {
 	public double salary;
 	public LocalDate start;
 	public String gender;
+	public String companyName;
+	public int companyId;
+	public String department[];
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
+	}
+
+	public String[] getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String[] department) {
+		this.department = department;
+	}
+
 
 	public Employee_payroll_Data(int id, String name, double salary) {
 		this.id = id;
@@ -23,6 +51,18 @@ public class Employee_payroll_Data {
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender) {
 		this(id, name, salary, start);
 		this.gender = gender;
+	}
+
+	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender, String companyName,
+			int companyId, String[] department) {
+		this.id = id;
+		this.name = name;
+		this.salary = salary;
+		this.start = start;
+		this.gender = gender;
+		this.companyName = companyName;
+		this.companyId = companyId;
+		this.department = department;
 	}
 
 	@Override

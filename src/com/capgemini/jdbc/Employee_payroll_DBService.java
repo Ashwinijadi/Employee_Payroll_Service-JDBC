@@ -1,17 +1,9 @@
 package com.capgemini.jdbc;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Employee_payroll_DBService {
 	private PreparedStatement employeePayrollDataStatement;
@@ -46,7 +38,7 @@ public class Employee_payroll_DBService {
 	private int updateEmployeeDataUsingPreparedStatement(String name, Double salary) {
 
 		try (Connection connection = this.getConnection();) {
-			String sql = "update employee_payroll set salary = ? where name=?;";
+			String sql = "update employee_payroll set salary = ? where name= ? ;";
 			PreparedStatement preparestatement = connection.prepareStatement(sql);
 			preparestatement.setDouble(1, salary);
 			preparestatement.setString(2, name);
