@@ -23,8 +23,8 @@ class Employee_payroll_service_Test {
 		Instant end = Instant.now();
 		System.out.println("Duration without thread : " + Duration.between(start, end));
 		Assert.assertEquals(5, employeePayrollService.countEntries(IOService.DB_IO));
-	}
-
+  }
+  
 	@Test
 	public void addingAddresses_WhenAddedToDB_ShouldMatchEmployeeEntries() {
 		LocalDate date = LocalDate.now();

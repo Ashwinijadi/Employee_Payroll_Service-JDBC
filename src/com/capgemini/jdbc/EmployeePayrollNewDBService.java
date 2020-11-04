@@ -158,9 +158,8 @@ public class EmployeePayrollNewDBService {
 			e.printStackTrace();
 		}
 		return genderToCountMap;
-	}
-
-	public Employee_payroll_Data addEmployeeToPayrollUC(String name, double salary, LocalDate start, String gender)
+	}	
+	public Employee_payroll_Data addEmployeeToPayrollUC(String name, double salary, LocalDate start,String  gender)
 			throws EmployeePayrollException {
 		int employeeId = -1;
 		Connection connection = null;
