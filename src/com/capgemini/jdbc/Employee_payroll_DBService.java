@@ -151,23 +151,6 @@ public class Employee_payroll_DBService {
 		return genderToSumOfSalaryMap;
 	}
 
-	public Map<String, Double> get_Max_Salary_ByGender() {
-		String sql = "SELECT gender,MAX(salary) as max_salary FROM employee_payroll GROUP BY gender;";
-		Map<String, Double> genderToMaxSalaryMap = new HashMap<>();
-		try (Connection connection = this.getConnection();) {
-			PreparedStatement prepareStatement = connection.prepareStatement(sql);
-			ResultSet resultSet = prepareStatement.executeQuery(sql);
-			while (resultSet.next()) {
-				String gender = resultSet.getString("gender");
-				double salary = resultSet.getDouble("max_salary");
-				genderToMaxSalaryMap.put(gender, salary);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return genderToMaxSalaryMap;
-	}
-
 	public Map<String, Double> get_Min_Salary_ByGender() {
 		String sql = "SELECT gender,MIN(salary) as min_salary FROM employee_payroll GROUP BY gender;";
 		Map<String, Double> genderToMinSalaryMap = new HashMap<>();
@@ -184,24 +167,7 @@ public class Employee_payroll_DBService {
 		}
 		return genderToMinSalaryMap;
 	}
-
-	public Map<String, Double> get_CountOfEmployee_ByGender() {
-		String sql = "SELECT gender,COUNT(salary) as emp_count FROM employee_payroll GROUP BY gender;";
-		Map<String, Double> genderToCountMap = new HashMap<>();
-		try (Connection connection = this.getConnection();) {
-			PreparedStatement prepareStatement = connection.prepareStatement(sql);
-			ResultSet resultSet = prepareStatement.executeQuery(sql);
-			while (resultSet.next()) {
-				String gender = resultSet.getString("gender");
-				double salary = resultSet.getDouble("emp_count");
-				genderToCountMap.put(gender, salary);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return genderToCountMap;
-	}
-
+	
 	public Employee_payroll_Data addEmployeeToPayroll(String name, double salary, LocalDate start, String gender) {
 		int employeeId = -1;
 		Employee_payroll_Data employee_payroll_Data = null;

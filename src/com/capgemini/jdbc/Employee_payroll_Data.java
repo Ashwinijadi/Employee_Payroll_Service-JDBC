@@ -36,7 +36,6 @@ public class Employee_payroll_Data {
 		this.department = department;
 	}
 
-
 	public Employee_payroll_Data(int id, String name, double salary) {
 		this.id = id;
 		this.name = name;
@@ -51,6 +50,12 @@ public class Employee_payroll_Data {
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender) {
 		this(id, name, salary, start);
 		this.gender = gender;
+	}
+
+	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender,
+			String[] department) {
+		this(id, name, salary, start, gender);
+		this.department = department;
 	}
 
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender, String companyName,
@@ -78,6 +83,6 @@ public class Employee_payroll_Data {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Employee_payroll_Data that = (Employee_payroll_Data) obj;
-		return id == that.id  &&  Double.compare(that.salary, salary) == 0 && name.equals(that.name);
+		return id == that.id && Double.compare(that.salary, salary) == 0 && name.equals(that.name);
 	}
 }
