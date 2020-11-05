@@ -86,4 +86,13 @@ class Employee_payroll_service_Test {
 		Assert.assertTrue(result);
 	}
 
+	@Test
+	public void givenEmployeePayrollData_ShouldReturn_ActiveEmployees() {
+		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
+		employeePayrollService.readEmployeepayrollData(IOService.DB_IO);
+		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
+				.readPayrollDataForActiveEmployees(IOService.DB_IO);
+		System.out.println(employeePayrollData);
+		Assert.assertEquals(5, employeePayrollData.size());
+	}
 }

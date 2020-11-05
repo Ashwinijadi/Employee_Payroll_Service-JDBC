@@ -139,4 +139,10 @@ public class Employee_payroll_service {
 			this.employeePayrollMap = employeePayrollNewDBService.get_CountOfEmployee_ByGender();
 		return employeePayrollMap;
 	}
+	
+	public List<Employee_payroll_Data> readPayrollDataForActiveEmployees(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollList = employeePayrollNewDBService.getActiveEmployees();
+		return employeePayrollList;
+	}
 }

@@ -283,6 +283,42 @@ public class EmployeePayrollNewDBService {
 		return employee_payroll_Data;
 	}
 
+	public List<Employee_payroll_Data> getActiveEmployees() {
+		String sql = "select * from employee_payroll where active=1;";
+		return this.getEmployeePayrollDataUsingDBActive(sql);
+	}
+
+	private List<Employee_payroll_Data> getEmployeePayrollDataNormalisedActive(ResultSet resultSet) {
+		List<Employee_payroll_Data> employeePayrollList = new ArrayList<>();
+		try {
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				String gender = resultSet.getString("gender");
+				LocalDate start = resultSet.getDate("start").toLocalDate();
+				double salary = resultSet.getDouble("salary");
+				boolean active = resultSet.getBoolean("active");
+				employeePayrollList.add(new Employee_payroll_Data(id, name, salary, start, gender, active));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
+	}
+
+	private List<Employee_payroll_Data> getEmployeePayrollDataUsingDBActive(String sql) {
+		ResultSet resultSet;
+		List<Employee_payroll_Data> employeePayrollList = null;
+		try (Connection connection = this.getConnection();) {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			resultSet = prepareStatement.executeQuery(sql);
+			employeePayrollList = this.getEmployeePayrollDataNormalisedActive(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
+	}
+
 	private Connection getConnection() throws SQLException {
 		Connection connection;
 		System.out.println("Connecting to database: ");
