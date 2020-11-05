@@ -36,7 +36,6 @@ public class Employee_payroll_DBService {
 	}
 
 	private int updateEmployeeDataUsingPreparedStatement(String name, Double salary) {
-
 		try (Connection connection = this.getConnection();) {
 			String sql = "update employee_payroll set salary = ? where name= ? ;";
 			PreparedStatement preparestatement = connection.prepareStatement(sql);
@@ -109,7 +108,7 @@ public class Employee_payroll_DBService {
 		return employeePayrollList;
 	}
 
-	private Connection getConnection() throws SQLException {
+	static Connection getConnection() throws SQLException {
 		Connection connection;
 		connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service", "root",
 				"Jashwini@2298");

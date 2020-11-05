@@ -96,8 +96,52 @@ public class Employee_payroll_service {
 			employeePayrollData.salary = salary;
 	}
 
-	public void addEmployeeToPayRoll(String name, double salary, LocalDate start, String gender) {
-		employeePayrollList.add(employeePayrollNewDBService.addEmployeeToPayroll(name, salary, start, gender));
+	public void addEmployeeToPayRoll(String name, double salary, LocalDate start, String gender)
+			throws EmployeePayrollException {
+		employeePayrollList.add(employeePayrollNewDBService.addEmployeeToPayrollUC(name, salary, start, gender));
+	}
+
+	public void addEmployeeToPayrollIn(List<Employee_payroll_Data> employeePayrollDataList) {
+		employeePayrollDataList.forEach(employeePayrollData -> {
+			log.info("Employee being added : " + employeePayrollData.name);
+			try {
+				this.addEmployeeToPayRoll(employeePayrollData.name, employeePayrollData.salary,
+						employeePayrollData.start, employeePayrollData.gender);
+			} catch (EmployeePayrollException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			log.info("Employee added : " + employeePayrollData.name);
+		});
+		log.info(" " + this.employeePayrollList);
+	}
+
+	public void addEmployeeToPayrollWithThreads(List<Employee_payroll_Data> employeePayrollDataList) {
+		Map<Integer, Boolean> employeeStatus = new HashMap<>();
+		employeePayrollDataList.forEach(employeePayrollData -> {
+			Runnable task = () -> {
+				employeeStatus.put(employeePayrollData.hashCode(), false);
+				log.info(" being added : " + Thread.currentThread().getName());
+				try {
+					this.addEmployeeToPayRoll(employeePayrollData.name, employeePayrollData.salary,
+							employeePayrollData.start, employeePayrollData.gender);
+				} catch (EmployeePayrollException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				employeeStatus.put(employeePayrollData.hashCode(), true);
+				log.info("Employee added : " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, employeePayrollData.name);
+			thread.start();
+		});
+		while (employeeStatus.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
+		log.info("" + this.employeePayrollList);
 	}
 
 	private Employee_payroll_Data getEmployee_payroll_Data(String name) {
@@ -139,10 +183,10 @@ public class Employee_payroll_service {
 			this.employeePayrollMap = employeePayrollNewDBService.get_CountOfEmployee_ByGender();
 		return employeePayrollMap;
 	}
-	
-	public List<Employee_payroll_Data> readPayrollDataForActiveEmployees(IOService ioService) {
-		if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollList = employeePayrollNewDBService.getActiveEmployees();
-		return employeePayrollList;
-	}
+
+//	public List<Employee_payroll_Data> readPayrollDataForActiveEmployees(IOService ioService) {
+//		if (ioService.equals(IOService.DB_IO))
+//			this.employeePayrollList = employeePayrollNewDBService.getActiveEmployees();
+//		return employeePayrollList;
+//	}
 }
