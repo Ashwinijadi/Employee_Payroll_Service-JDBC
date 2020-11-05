@@ -2,22 +2,27 @@ package com.capgemini.jdbc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.*;
 import com.capgemini.jdbc.EmployeePayrollException.Exception;
+import java.util.logging.Logger;
 
 public class Employee_payroll_service {
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
 	}
 
-	private List<Employee_payroll_Data> employeePayrollList;
+	Logger log = Logger.getLogger(Employee_payroll_service.class.getName());
+	public List<Employee_payroll_Data> employeePayrollList;
 	private Employee_payroll_DBService employeePayrollDBService;
+	private EmployeePayrollNewDBService employeePayrollNewDBService;
 	private Map<String, Double> employeePayrollMap;
 
 	public Employee_payroll_service() {
 		employeePayrollDBService = Employee_payroll_DBService.getInstance();
+		employeePayrollNewDBService = EmployeePayrollNewDBService.getInstance();
 	}
 
 	public Employee_payroll_service(List<Employee_payroll_Data> employeePayrollList) {
@@ -39,27 +44,36 @@ public class Employee_payroll_service {
 	}
 
 	public void readEmployeeData(Scanner consoleInputReader) {
-		System.out.println("Enter employee ID : ");
+		log.info("Enter employee ID : ");
 		int id = Integer.parseInt(consoleInputReader.nextLine());
-		System.out.println("Enter employee name : ");
+		log.info("Enter employee name : ");
 		String name = consoleInputReader.nextLine();
-		System.out.println("Enter employee salary : ");
+		log.info("Enter employee salary : ");
 		double salary = Double.parseDouble(consoleInputReader.nextLine());
 		employeePayrollList.add(new Employee_payroll_Data(id, name, salary));
 	}
 
-	public void writeEmployeeData(IOService ioService) {
-		if (ioService.equals(IOService.CONSOLE_IO))
-			System.out.println("Employee Payroll Data to Console\n" + employeePayrollList);
-		else if (ioService.equals(IOService.FILE_IO))
-			new Employee_payroll_FileIOService().writeData(employeePayrollList);
+	public List<Employee_payroll_Data> readEmployeepayrollData(IOService ioService) {
+		if (ioService.equals(IOService.FILE_IO))
+			return new Employee_payroll_FileIOService().readData();
+		if (ioService.equals(IOService.DB_IO))
+			return new EmployeePayrollNewDBService().readData();
+		else
+			return null;
 	}
 
 	public List<Employee_payroll_Data> readPayrollDataForRange(IOService ioService, LocalDate startDate,
 			LocalDate endDate) {
 		if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollList = employeePayrollDBService.readData();
+			this.employeePayrollList = employeePayrollNewDBService.readData();
 		return employeePayrollList;
+	}
+
+	public void writeEmployeeData(IOService ioService) {
+		if (ioService.equals(IOService.CONSOLE_IO))
+			log.info("Employee Payroll Data to Console\n" + employeePayrollList);
+		else if (ioService.equals(IOService.FILE_IO))
+			new Employee_payroll_FileIOService().writeData(employeePayrollList);
 	}
 
 	public void printData(IOService ioService) {
@@ -69,37 +83,31 @@ public class Employee_payroll_service {
 	public long countEntries(IOService ioService) {
 		if (ioService.equals(IOService.FILE_IO))
 			return new Employee_payroll_FileIOService().countEntries();
-		return 0;
-	}
-
-	public List<Employee_payroll_Data> readEmployeepayrollData(IOService ioService) {
-		if (ioService.equals(IOService.FILE_IO))
-			return new Employee_payroll_FileIOService().readData();
-		else if (ioService.equals(IOService.DB_IO))
-			return new Employee_payroll_DBService().readData();
-		else
-			return null;
+		return employeePayrollList.size();
 	}
 
 	public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
-		int result = employeePayrollDBService.updateEmployeeData(name, salary);
-		if (result == 0)
-			throw new EmployeePayrollException(Exception.DATA_NULL, "No data update is failed");
+		int result = employeePayrollNewDBService.updateEmployeeData(name, salary);
+		if (result == 0) {
+			throw new EmployeePayrollException(Exception.DATA_NULL, "No Data to update ");
+		}
 		Employee_payroll_Data employeePayrollData = this.getEmployee_payroll_Data(name);
 		if (employeePayrollData != null)
 			employeePayrollData.salary = salary;
 	}
 
+	public void addEmployeeToPayRoll(String name, double salary, LocalDate start, String gender) {
+		employeePayrollList.add(employeePayrollNewDBService.addEmployeeToPayroll(name, salary, start, gender));
+	}
+
 	private Employee_payroll_Data getEmployee_payroll_Data(String name) {
-		Employee_payroll_Data employeePayrollData;
-		employeePayrollData = employeePayrollList.stream().filter(emp_Data -> emp_Data.name.equals(name)).findFirst()
+		return this.employeePayrollList.stream().filter(emp_Data -> emp_Data.name.equals(name)).findFirst()
 				.orElse(null);
-		return employeePayrollData;
 	}
 
 	public boolean checkEmployeePayrollInSyncWithDB(String name) {
-		List<Employee_payroll_Data> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
-		return employeePayrollDataList.get(0).equals(getEmployee_payroll_Data(name));
+		List<Employee_payroll_Data> employeePayrollList = employeePayrollDBService.getEmployeePayrollData(name);
+		return employeePayrollList.get(0).equals(getEmployee_payroll_Data(name));
 	}
 
 	public Map<String, Double> readPayrollDataForAvgSalary(IOService ioService) {
@@ -116,7 +124,7 @@ public class Employee_payroll_service {
 
 	public Map<String, Double> readPayrollDataForMaxSalary(IOService ioService) {
 		if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollMap = employeePayrollDBService.get_Max_Salary_ByGender();
+			this.employeePayrollMap = employeePayrollNewDBService.get_Max_Salary_ByGender();
 		return employeePayrollMap;
 	}
 
@@ -128,7 +136,7 @@ public class Employee_payroll_service {
 
 	public Map<String, Double> readPayrollDataFor_CountOfEmployee_ByGender(IOService ioService) {
 		if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollMap = employeePayrollDBService.get_CountOfEmployee_ByGender();
+			this.employeePayrollMap = employeePayrollNewDBService.get_CountOfEmployee_ByGender();
 		return employeePayrollMap;
 	}
 }

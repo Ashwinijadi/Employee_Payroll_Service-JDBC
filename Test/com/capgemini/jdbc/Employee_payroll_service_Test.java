@@ -3,7 +3,6 @@ package com.capgemini.jdbc;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import com.capgemini.jdbc.Employee_payroll_service.IOService;
@@ -15,8 +14,8 @@ class Employee_payroll_service_Test {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
 				.readEmployeepayrollData(IOService.DB_IO);
-		Assert.assertEquals(3, employeePayrollData.size());
 		System.out.println(employeePayrollData);
+		Assert.assertEquals(3, employeePayrollData.size());
 	}
 
 	@Test
@@ -28,7 +27,6 @@ class Employee_payroll_service_Test {
 		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
 				.readPayrollDataForRange(IOService.DB_IO, startDate, endDate);
 		Assert.assertEquals(3, employeePayrollData.size());
-		System.out.println(employeePayrollData);
 	}
 
 	@Test
@@ -73,21 +71,19 @@ class Employee_payroll_service_Test {
 		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
 		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
 				.readEmployeepayrollData(IOService.DB_IO);
-		employeePayrollService.updateEmployeeSalary("Hima", 200000.0);
-		System.out.println(employeePayrollData);
+		employeePayrollService.updateEmployeeSalary("Hima", 300000.0);
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Hima");
+		Assert.assertTrue(result);
+		System.out.println(employeePayrollData);
+	}
+
+	@Test
+	public void givenNewEmployeesWhenAddedInNormalised_ShouldSyncWithDB() {
+		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
+		employeePayrollService.readEmployeepayrollData(IOService.DB_IO);
+		employeePayrollService.addEmployeeToPayRoll("Revanth", 5000000.00, LocalDate.now(), "M");
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Revanth");
 		Assert.assertTrue(result);
 	}
 
-//	@Test
-//	public void givenNewEmployee_WhenAddedShouldSyncWithDB() throws EmployeePayrollException {
-//		Employee_payroll_service employeePayrollService = new Employee_payroll_service();
-//		List<Employee_payroll_Data> employeePayrollData = employeePayrollService
-//				.readEmployeepayrollData(IOService.DB_IO);
-//		employeePayrollService.addEmployeeToPayRoll("Dhoni", 5000000, LocalDate.now(), "M");
-//		System.out.println(employeePayrollData);
-//		Boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Dhoni");
-//		Assert.assertTrue(result);
-//		System.out.println(employeePayrollData);
-//	}
 }

@@ -7,7 +7,7 @@ public class EmployeePayrollException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public enum Exception {
-		DATA_NULL
+		DATA_NULL,INSERTION_FAILED
 	}
 
 	public Exception type;

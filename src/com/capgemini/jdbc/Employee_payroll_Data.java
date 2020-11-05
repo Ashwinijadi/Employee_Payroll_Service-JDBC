@@ -1,6 +1,7 @@
 package com.capgemini.jdbc;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Employee_payroll_Data {
 	public int id;
@@ -11,6 +12,9 @@ public class Employee_payroll_Data {
 	public String companyName;
 	public int companyId;
 	public String department[];
+	public int departmentId;
+	public String departmentName;
+	public boolean active;
 
 	public int getId() {
 		return id;
@@ -42,6 +46,11 @@ public class Employee_payroll_Data {
 		this.salary = salary;
 	}
 
+	public Employee_payroll_Data(int id, int departmentId) {
+		this.id = id;
+		this.departmentId = departmentId;
+	}
+
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start) {
 		this(id, name, salary);
 		this.start = start;
@@ -52,6 +61,16 @@ public class Employee_payroll_Data {
 		this.gender = gender;
 	}
 
+	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender, boolean active) {
+		this(id, name, salary, start, gender);
+		this.active = active;
+	}
+
+	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender, int companyId) {
+		this(id, name, salary, start, gender);
+		this.companyId = companyId;
+	}
+
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender,
 			String[] department) {
 		this(id, name, salary, start, gender);
@@ -60,14 +79,19 @@ public class Employee_payroll_Data {
 
 	public Employee_payroll_Data(int id, String name, double salary, LocalDate start, String gender, String companyName,
 			int companyId, String[] department) {
-		this.id = id;
-		this.name = name;
-		this.salary = salary;
-		this.start = start;
-		this.gender = gender;
+		this(id, name, salary, start, gender, department);
 		this.companyName = companyName;
 		this.companyId = companyId;
-		this.department = department;
+	}
+
+	public Employee_payroll_Data(int departmentId, String departmentName) {
+		this.departmentId = departmentId;
+		this.departmentName = departmentName;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, gender, salary, start);
 	}
 
 	@Override
@@ -84,5 +108,12 @@ public class Employee_payroll_Data {
 			return false;
 		Employee_payroll_Data that = (Employee_payroll_Data) obj;
 		return id == that.id && Double.compare(that.salary, salary) == 0 && name.equals(that.name);
+	}
+
+	public void printDepartments() {
+		String departments[] = this.getDepartment();
+		for (String s : departments) {
+			System.out.println("id: " + this.getId() + ":" + s);
+		}
 	}
 }
